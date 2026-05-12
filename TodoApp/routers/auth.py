@@ -23,6 +23,7 @@ ALGORITHM = 'HS256'
 bcrypt_context = CryptContext(schemes=['bcrypt'] , deprecated = 'auto')
 oauth2bearer = OAuth2PasswordBearer(tokenUrl = "auth/token ")
 
+#what is bearer token and how it is used ?
 
 
 class CreateUserRequest(BaseModel):
