@@ -21,7 +21,7 @@ ALGORITHM = 'HS256'
 
 #dont know the meaning of this line entirely
 bcrypt_context = CryptContext(schemes=['bcrypt'] , deprecated = 'auto')
-oauth2bearer = OAuth2PasswordBearer(tokenUrl = "auth/token ")
+oauth2bearer = OAuth2PasswordBearer(tokenUrl = "auth/token")
 
 #what is bearer token and how it is used ?
 
@@ -62,7 +62,7 @@ def authenticate_user(username : str ,password :str, db:db_dependency):
     else:
         return False
 
-async def get_current_user(token : Annotated[str, Depends(OAuth2PasswordBearer)]):
+async def get_current_user(token : Annotated[str, Depends(oauth2bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY,algorithms= [ALGORITHM])
         username = payload.get("sub")
