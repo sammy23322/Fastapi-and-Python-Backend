@@ -67,7 +67,7 @@ async def get_current_user(token : Annotated[str, Depends(oauth2bearer)]):
         payload = jwt.decode(token, SECRET_KEY,algorithms= [ALGORITHM])
         username = payload.get("sub")
         user_id = payload.get('id')
-        if username or id is None:
+        if username is None  or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
         return username , user_id 
     except JWTError:                                                        #what is JWT Error ? why it is used ? 
