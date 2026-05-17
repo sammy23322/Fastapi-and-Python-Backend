@@ -69,7 +69,7 @@ async def get_current_user(token : Annotated[str, Depends(oauth2bearer)]):
         user_id = payload.get('id')
         if username is None  or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-        return username , user_id 
+        return {'username': username ,'id': user_id }
     except JWTError:                                                        #what is JWT Error ? why it is used ? 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 

@@ -30,8 +30,8 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.get("/")
-async def read_all(db : db_dependency):
-    return db.query(Todos).all()
+async def read_all(user: user_dependency, db : db_dependency):
+    return db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
 
 
 
