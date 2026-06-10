@@ -65,17 +65,17 @@ def authenticate_user(username : str ,password :str, db:db_dependency):
 async def get_current_user(token : Annotated[str, Depends(oauth2bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY,algorithms= [ALGORITHM])
-        username = payload.get("sub")
-        user_id = payload.get('id')
-        user_role = payload.get('role')
+        username: str = payload.get("sub")
+        user_id: int = payload.get('id')
+        user_role: str = payload.get('role')
         if username is None  or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
         return {'username': username ,'id': user_id, 'user_role':user_role }
     except JWTError:                                                        #what is JWT Error ? why it is used ? 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-def create_access_token(username :str , user_id : int , role: str,expires_delta : timedelta):
-    encode = {'sub' : username , 'id' : user_id,role:role }
+def create_access_token(username :str , user_id : int , role: str, expires_delta : timedelta):
+    encode = {'sub' : username , 'id' : user_id, role : role }
     expires = datetime.datetime.now() + expires_delta              #didnt understood this line 
     encode.update({'exp': expires})
     return jwt.encode(encode , SECRET_KEY , algorithm=ALGORITHM)
@@ -103,5 +103,5 @@ async def login_for_access_token(form_data : Annotated[OAuth2PasswordRequestForm
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) 
-    token = create_access_token(user.user_name, user.id,user.role,  timedelta(minutes = 20))
+    token = create_access_token(user.user_name , user.id , user.role,  timedelta(minutes = 20))
     return {'access_token' : token , 'token_type' : 'bearer'}
