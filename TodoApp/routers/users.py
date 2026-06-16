@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException , status, Path, Field
-from models import users
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException , status, Path
+from models import Users
+from pydantic import BaseModel, Field
 from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
@@ -33,21 +33,21 @@ db_dependency = Annotated[Session , Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.get("/details/{user_id}}",  status_code=status.HTTP_200_OK)
+@router.get("/",  status_code=status.HTTP_200_OK)
 async def get_user(user:user_dependency, db:db_dependency):
     if user is None:
         raise HTTPException(status_code=401 , detail='Authentication Failed')
     
-    return db.query(Users).filter(Users.id == user.get('id'))
+    return db.query(Users).filter(Users.id == user.get('id')).first()
 
-@router.post("/password", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/password", status_code=status.HTTP_204_NO_CONTENT)
 async def change_password(user:user_dependency, db:db_dependency,
                           user_verification:Usererfication):
     if user is None:
         raise HTTPException(status_code=401, detail = "authentication failed")
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
 
-    if not bcrypt_context.verify(user_verification.password, user_model.hashed_pasword):#doubt in this line 
+    if not bcrypt_context.verify(user_verification.password, user_model.hashed_password):           #doubt in this line 
         raise HTTPException(status_code = 401 , detail = "error on password change")
     user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
     db.add(user_model)
